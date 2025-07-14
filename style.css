@@ -1,8 +1,81 @@
-/* Placeholder for all the beautiful styles from our blueprint */
-body {
-    background-color: #0A0814;
-    font-family: 'Sarabun', sans-serif;
+/* --- Color Palette & Fonts --- */
+:root {
+    --color-bg: #0A0814;
+    --color-shadow: #1A162D;
+    --color-gold: #FFD700;
+    --color-purple: #9A78C2;
+    --color-green: #78C2AD;
+    --font-title: 'Pridi', serif;
+    --font-body: 'Sarabun', sans-serif;
 }
-.font-pridi {
-    font-family: 'Pridi', serif;
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-body); background-color: var(--color-bg); color: #E0E0E0; cursor: none; }
+.font-pridi { font-family: var(--font-title); }
+.bg-cosmic-black { background-color: var(--color-bg); }
+.text-arcane-gold { color: var(--color-gold); }
+.text-nebula-purple { color: var(--color-purple); }
+.text-aurora-green { color: var(--color-green); }
+
+/* --- Glass Pane UI --- */
+.glass {
+    background: rgba(26, 22, 45, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 215, 0, 0.1);
+    border-radius: 1rem;
 }
+
+/* --- Animations & Effects --- */
+@keyframes pulse-glow {
+    0%, 100% { text-shadow: 0 0 8px var(--color-gold), 0 0 12px var(--color-purple); }
+    50% { text-shadow: 0 0 12px var(--color-gold), 0 0 20px var(--color-purple), 0 0 35px var(--color-green); }
+}
+.hero-glow { animation: pulse-glow 5s infinite ease-in-out; }
+
+/* --- Buttons & Links --- */
+.magic-button {
+    padding: 0.75rem 1.5rem;
+    border: 2px solid var(--color-gold);
+    color: var(--color-gold);
+    background: transparent;
+    border-radius: 999px;
+    font-family: var(--font-title);
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+    transition: color 0.4s ease-in-out;
+    z-index: 1;
+}
+.magic-button::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background-color: var(--color-gold);
+    transition: height 0.4s ease-in-out;
+    z-index: -1;
+}
+.magic-button:hover { color: var(--color-bg); }
+.magic-button:hover::before { height: 100%; }
+.magic-link { position: relative; padding-bottom: 0.25rem; }
+.magic-link::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background-color: var(--color-gold); transition: width 0.3s ease; }
+.magic-link:hover::after { width: 100%; }
+
+/* --- Custom Cursor --- */
+#cursor-follower, #cursor-dot { position: fixed; border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); }
+#cursor-follower { width: 40px; height: 40px; border: 1px solid rgba(255, 215, 0, 0.5); transition: transform 0.15s ease-out; }
+#cursor-dot { width: 6px; height: 6px; background-color: var(--color-gold); }
+
+/* --- Tarot Card --- */
+#tarot-card-container { perspective: 1000px; }
+#tarot-card { width: 180px; height: 300px; position: relative; transform-style: preserve-3d; transition: transform 0.8s ease; cursor: pointer; }
+#tarot-card.flipped { transform: rotateY(180deg); }
+.tarot-face { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 1rem; }
+.tarot-back { border: 2px solid var(--color-gold); background-image: linear-gradient(145deg, var(--color-shadow), var(--color-bg)); }
+.tarot-front { transform: rotateY(180deg); }
+
+/* --- Skill Modal --- */
+#skill-modal.visible { opacity: 1; pointer-events: auto; }
+#skill-modal.visible > div { transform: scale(1); }
