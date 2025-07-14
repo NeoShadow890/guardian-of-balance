@@ -1,39 +1,91 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- DOM Elements ---
-    const allSections = document.querySelectorAll('main > section');
-    // ... (all other DOM elements from previous steps)
+    const openingSection = document.getElementById('opening');
+    const openingTitle = document.getElementById('opening-title');
+    const openingSubtitle = document.getElementById('opening-subtitle');
+    const startButton = document.getElementById('start-button');
+    const mainContent = document.getElementById('main-content');
+    const skillGrid = document.getElementById('skill-grid');
+    const cursorFollower = document.getElementById('cursor-follower');
+    const cursorDot = document.getElementById('cursor-dot');
+    const backgroundContainer = document.getElementById('background-container');
+    
+    // Modal Elements
+    const skillModal = document.getElementById('skill-modal');
+    const skillModalContent = document.getElementById('skill-modal-content');
+    const skillModalClose = document.getElementById('skill-modal-close');
+
+    // Tarot Elements
+    const tarotCard = document.getElementById('tarot-card');
+    const dailyBoonBar = document.getElementById('daily-boon-bar');
 
     // --- Databases ---
-    const skillDatabase = { /* ... SKILL DATA ... */ };
-    const tarotDeck = [ /* ... TAROT DATA ... */ ];
-    const quizDatabase = [
-        {
-            question: "องค์ประกอบใดที่ไม่ใช่ส่วนหนึ่งของ 'ทฤษฎีมหาสมดุล'?",
-            answers: ["จิต (Mind)", "จักรวาล (Cosmos)", "เจตจำนง (Will)", "ความว่างเปล่า (Void)"],
-            correctAnswer: 3
+    const skillDatabase = {
+        active: {
+            resolveBurst: { 
+                name: "Resolve Burst", 
+                rank: "SSR", 
+                icon: "fa-solid fa-burst",
+                lore: "ไม่ใช่แค่การระเบิดพลัง แต่คือการเร่งกระบวนการเผาผลาญ 'แก่นกายา' ในระดับเซลล์ โดยใช้ 'เจตจำนง' เป็นตัวจุดชนวน ทำให้เกิดพลังมหาศาลในชั่วพริบตา สะท้อนถึงปรากฏการณ์ Supernova ของดวงดาว.",
+                details: "Cost: แก่นกายา | Synergy: Fear Walker | Drawback: อ่อนล้าอย่างหนัก"
+            },
+            quickAnalysis: { 
+                name: "Quick Analysis", 
+                rank: "SSR", 
+                icon: "fa-solid fa-magnifying-glass-chart",
+                lore: "คือความสามารถในการทำให้กระแสความคิดเข้าสู่สภาวะ 'Quantum Coherence' ชั่วขณะ ทำให้สามารถประมวลผลข้อมูลที่ซับซ้อนได้พร้อมกันในทุกมิติ คล้ายกับหลักการของ Quantum Computing.",
+                details: "Cost: แก่นปัญญา | Synergy: Precision Strike | Drawback: ใช้สมาธิสูง"
+            },
         },
-        {
-            question: "ทักษะใดสะท้อนถึงปรากฏการณ์ Supernova ของดวงดาว?",
-            answers: ["Dimensional Shift", "Resolve Burst", "Shadow Walk", "Quick Analysis"],
-            correctAnswer: 1
+        passive: {
+            shadowWalk: { 
+                name: "Shadow Walk", 
+                rank: "SSR", 
+                icon: "fa-solid fa-moon",
+                lore: "เรียนรู้ที่จะกลมกลืนไปกับเงา ไม่ใช่การล่องหน แต่คือการทำความเข้าใจในธรรมชาติของแสงและเงา จนสามารถเป็นส่วนหนึ่งของมันได้.",
+                details: "Cost: ไม่มี | Synergy: - | Drawback: ใช้ได้ผลดีในที่แสงน้อย"
+            },
+            fearWalker: { 
+                name: "Fear Walker", 
+                rank: "SSR", 
+                icon: "fa-solid fa-shoe-prints",
+                lore: "ผู้ที่เข้าใจสมดุลจะไม่ปฏิเสธความมืด แต่จะเรียนรู้ที่จะเดินผ่านมันไปโดยไม่ให้มันกลืนกิน ทำให้จิตใจสงบนิ่งเมื่อเผชิญหน้ากับความกลัว.",
+                details: "Cost: ไม่มี | Synergy: Resolve Burst | Drawback: ต้องยอมรับความกลัวจากใจจริง"
+            },
+        },
+        dormant: {
+            dimensionalShift: { 
+                name: "Dimensional Shift", 
+                rank: "SSS", 
+                icon: "fa-solid fa-atom",
+                lore: "ทักษะขั้นสูงสุดที่ไม่ได้เป็นการ 'เคลื่อนย้าย' แต่คือการ 'พับ' ปริภูมิ-เวลา (Spacetime) เข้าหากันโดยใช้ 'แก่นจักรวาล' เป็นจุดศูนย์กลาง ทำให้สามารถก้าวข้ามจากจุดหนึ่งไปยังอีกจุดหนึ่งได้ในพริบตา.",
+                details: "Cost: แก่นจักรวาลทั้งหมด | Synergy: - | Drawback: เสี่ยงต่อการหลงทางในมิติ"
+            },
         }
-        // ... More questions
+    };
+    const tarotDeck = [
+        { 
+            name: "The Balance", 
+            boon: "วันนี้พลังทุกด้านของท่านสมดุล ทำให้การใช้ทักษะทุกอย่างมีประสิทธิภาพสูงสุด",
+            icon: "fa-solid fa-yin-yang"
+        },
+        { 
+            name: "The Shadow", 
+            boon: "เงาจะนำทางท่านในวันนี้ ทำให้ทักษะที่เกี่ยวกับเงามีพลังมากขึ้นเป็นพิเศษ",
+            icon: "fa-solid fa-moon"
+        },
+        { 
+            name: "The Cosmos", 
+            boon: "จักรวาลส่งพลังมาให้ท่านโดยตรง 'แก่นจักรวาล' ของท่านจะฟื้นฟูอย่างรวดเร็ว",
+            icon: "fa-solid fa-meteor" 
+        }
     ];
 
     // --- State Management ---
     let appState = {
         lastDrawDate: null,
-        drawnCard: null,
-        playerProgress: {
-            characterRole: null,
-            unlockedZones: ['nexus'],
-            bossBattleDefeated: false
-        },
-        quizState: {
-            currentQuestionIndex: 0,
-            score: 0
-        }
+        drawnCardName: null
     };
 
     // --- Initialization Function ---
@@ -45,101 +97,87 @@ document.addEventListener('DOMContentLoaded', () => {
         initCustomCursor();
         initBackground();
         initTarotState();
-        navigateToZone('nexus'); // Start at the nexus
     }
 
     // --- Core Functions ---
 
-    function loadState() { /* ... Function from previous step ... */ }
-    function saveState() { /* ... Function from previous step ... */ }
-    function playOpeningAnimation() { /* ... Function from previous step ... */ }
-    function enterMainSite() { /* ... Function from previous step ... */ }
-    function populateSkillGrid() { /* ... Function from previous step ... */ }
-    function openSkillModal(skillId) { /* ... Function from previous step ... */ }
-    function closeSkillModal() { /* ... Function from previous step ... */ }
-    function initCustomCursor() { /* ... Function from previous step ... */ }
-    function initBackground() { /* ... Function from previous step ... */ }
-    function initTarotState() { /* ... Function from previous step ... */ }
-    function drawTarotCard() { /* ... Function from previous step ... */ }
-
-    // --- New Gamification Functions ---
-
-    function navigateToZone(zoneId) {
-        allSections.forEach(section => {
-            if (section.id === zoneId) {
-                // We'll use classes for smooth transitions later
-                section.style.display = 'flex'; // Or 'block' depending on layout
-            } else {
-                section.style.display = 'none';
+    function loadState() {
+        try {
+            const savedState = JSON.parse(localStorage.getItem('guardianOfBalanceState'));
+            if (savedState) {
+                const today = new Date().toDateString();
+                if (savedState.lastDrawDate === today) {
+                    appState = savedState;
+                } else {
+                    localStorage.removeItem('guardianOfBalanceState');
+                }
             }
-        });
-        // Scroll to the top of the new section
-        document.querySelector('main').scrollTop = 0;
+        } catch (e) {
+            console.error("Error loading state from localStorage", e);
+            localStorage.removeItem('guardianOfBalanceState');
+        }
     }
 
-    function startBossBattle() {
-        appState.quizState.currentQuestionIndex = 0;
-        appState.quizState.score = 0;
-        // Logic to show the quiz UI and the first question
-        displayQuestion(0);
-        console.log("Boss Battle Started!");
+    function saveState() {
+        appState.lastDrawDate = new Date().toDateString();
+        localStorage.setItem('guardianOfBalanceState', JSON.stringify(appState));
+    }
+    
+    function playOpeningAnimation() { /* ... Function from previous steps ... */ }
+    function enterMainSite() { /* ... Function from previous steps ... */ }
+    function populateSkillGrid() { /* ... Function from previous steps ... */ }
+    function openSkillModal(skillId) { /* ... Function from previous steps ... */ }
+    function closeSkillModal() { /* ... Function from previous steps ... */ }
+    function initCustomCursor() { /* ... Function from previous steps ... */ }
+    function initBackground() { /* ... Function from previous steps ... */ }
+
+    function initTarotState() {
+        if (appState.drawnCardName) {
+            const cardData = tarotDeck.find(c => c.name === appState.drawnCardName);
+            if(cardData) {
+                const cardFront = tarotCard.querySelector('.tarot-front');
+                cardFront.innerHTML = `<i class="${cardData.icon} fa-5x text-arcane-gold"></i><h3 class="font-pridi mt-4">${cardData.name}</h3>`;
+                tarotCard.classList.add('flipped');
+                dailyBoonBar.textContent = `พรสำหรับวันนี้: ${cardData.boon}`;
+                dailyBoonBar.classList.add('visible');
+            }
+        }
     }
 
-    function displayQuestion(index) {
-        if (index >= quizDatabase.length) {
-            showFinalResult();
+    function drawTarotCard() {
+        const today = new Date().toDateString();
+        if (appState.lastDrawDate === today) {
+            alert("คุณได้รับพรสำหรับวันนี้ไปแล้ว");
             return;
         }
-        const questionData = quizDatabase[index];
-        // Logic to update the HTML with the question and answers
-        // e.g., document.getElementById('question-text').textContent = questionData.question;
-        console.log(`Displaying Question: ${questionData.question}`);
-    }
 
-    function checkAnswer(selectedIndex) {
-        const currentQuestion = quizDatabase[appState.quizState.currentQuestionIndex];
-        if (selectedIndex === currentQuestion.correctAnswer) {
-            appState.quizState.score++;
-            console.log("Correct!");
-        } else {
-            console.log("Incorrect.");
-        }
-        appState.quizState.currentQuestionIndex++;
-        displayQuestion(appState.quizState.currentQuestionIndex);
-    }
-
-    function showFinalResult() {
-        console.log(`Quiz Finished! Your score: ${appState.quizState.score}/${quizDatabase.length}`);
-        if (appState.quizState.score >= quizDatabase.length * 0.75) { // Win condition: 75% correct
-            appState.playerProgress.bossBattleDefeated = true;
-            console.log("You have won the Boss Battle!");
-            // Logic to unlock the ending
-        } else {
-            console.log("You have lost. Try again later.");
-        }
+        const drawnCard = tarotDeck[Math.floor(Math.random() * tarotDeck.length)];
+        appState.drawnCardName = drawnCard.name;
+        
         saveState();
+        initTarotState(); 
     }
 
     // --- Event Listeners ---
     function setupEventListeners() {
-        // ... (all other event listeners from previous steps)
+        startButton.addEventListener('click', enterMainSite);
 
-        // Navigation listeners (example)
-        const nexusLinks = document.querySelectorAll('header a'); // Simplified
-        nexusLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const zoneId = e.target.getAttribute('href').substring(1); // remove #
-                navigateToZone(zoneId);
-            });
+        document.querySelectorAll('.skill-node').forEach(node => {
+            node.addEventListener('click', () => openSkillModal(node.dataset.skillId));
         });
 
-        // Example listener for a "Start Boss Battle" button
-        // const startQuizBtn = document.getElementById('start-boss-battle-btn');
-        // if(startQuizBtn) startQuizBtn.addEventListener('click', startBossBattle);
+        skillModalClose.addEventListener('click', closeSkillModal);
+        skillModal.addEventListener('click', (e) => {
+            if (e.target === skillModal) closeSkillModal();
+        });
+
+        if(tarotCard) {
+            tarotCard.addEventListener('click', drawTarotCard);
+        }
     }
 
     // --- Start the journey ---
     initialize();
 
 });
+
