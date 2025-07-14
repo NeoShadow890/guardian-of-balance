@@ -1,257 +1,37 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- DOM Elements ---
-    const allSections = document.querySelectorAll('main > section');
-    const openingSection = document.getElementById('opening');
-    const openingTitle = document.getElementById('opening-title');
-    const openingSubtitle = document.getElementById('opening-subtitle');
-    const startButton = document.getElementById('start-button');
-    const mainContent = document.getElementById('main-content');
-    const skillGrid = document.getElementById('skill-grid');
-    const cursorFollower = document.getElementById('cursor-follower');
-    const cursorDot = document.getElementById('cursor-dot');
-    const backgroundContainer = document.getElementById('background-container');
-    const skillModal = document.getElementById('skill-modal');
-    const skillModalContent = document.getElementById('skill-modal-content');
-    const skillModalClose = document.getElementById('skill-modal-close');
-    const tarotCard = document.getElementById('tarot-card');
-    const dailyBoonBar = document.getElementById('daily-boon-bar');
-    const navLinks = document.querySelectorAll('header a');
-
-    // --- Databases ---
-    const skillDatabase = { /* ... SKILL DATA ... */ };
-    const tarotDeck = [ /* ... TAROT DATA ... */ ];
-    const quizDatabase = [
-        {
-            question: "องค์ประกอบใดที่ไม่ใช่ส่วนหนึ่งของ 'ทฤษฎีมหาสมดุล'?",
-            answers: ["จิต (Mind)", "จักรวาล (Cosmos)", "เจตจำนง (Will)", "ความว่างเปล่า (Void)"],
-            correctAnswer: 3
-        },
-        {
-            question: "ทักษะใดสะท้อนถึงปรากฏการณ์ Supernova ของดวงดาว?",
-            answers: ["Dimensional Shift", "Resolve Burst", "Shadow Walk", "Quick Analysis"],
-            correctAnswer: 1
-        }
-        // ... More questions will be added here
-    ];
-
-    // --- State Management ---
-    let appState = { 
-        lastDrawDate: null, 
-        drawnCardName: null,
-        playerProgress: {
-            bossBattleDefeated: false
-        },
-        quizState: {
-            currentQuestionIndex: 0,
-            score: 0
-        }
+    const elements = {
+        openingSection: document.getElementById('opening'),
+        openingTitle: document.getElementById('opening-title'),
+        openingSubtitle: document.getElementById('opening-subtitle'),
+        startButton: document.getElementById('start-button'),
+        mainContent: document.getElementById('main-content'),
+        skillGrid: document.getElementById('skill-grid'),
+        cursorFollower: document.getElementById('cursor-follower'),
+        cursorDot: document.getElementById('cursor-dot'),
+        backgroundContainer: document.getElementById('background-container'),
+        skillModal: document.getElementById('skill-modal'),
+        skillModalContent: document.getElementById('skill-modal-content'),
+        skillModalClose: document.getElementById('skill-modal-close'),
+        tarotCard: document.getElementById('tarot-card'),
+        dailyBoonBar: document.getElementById('daily-boon-bar'),
+        navLinks: document.querySelectorAll('header a'),
+        theoryButton: document.querySelector('#theory .magic-button')
     };
-
-    // --- Core Functions ---
-    // (All working functions from previous steps: loadState, saveState, playOpeningAnimation, enterMainSite, etc.)
-    // For brevity, only new or modified functions are shown in full detail. The complete, correct versions are included.
-
-    function loadState() {
-        try {
-            const savedState = JSON.parse(localStorage.getItem('guardianOfBalanceState'));
-            if (savedState) {
-                const today = new Date().toDateString();
-                if (savedState.lastDrawDate === today) {
-                    appState.lastDrawDate = savedState.lastDrawDate;
-                    appState.drawnCardName = savedState.drawnCardName;
-                } else {
-                    localStorage.removeItem('guardianOfBalanceState');
-                }
-            }
-        } catch (e) { console.error("Error loading state:", e); }
-    }
-
-    function saveState() {
-        appState.lastDrawDate = new Date().toDateString();
-        localStorage.setItem('guardianOfBalanceState', JSON.stringify(appState));
-    }
-
-    function playOpeningAnimation() {
-        if(openingTitle) setTimeout(() => { openingTitle.style.opacity = '1'; }, 500);
-        if(openingSubtitle) setTimeout(() => { openingSubtitle.style.opacity = '1'; }, 1500);
-        if(startButton) setTimeout(() => { startButton.style.opacity = '1'; }, 2500);
-    }
-
-    function enterMainSite() {
-        if(openingSection) openingSection.style.opacity = '0';
-        if(mainContent) mainContent.classList.remove('opacity-0');
-        setTimeout(() => {
-            if(openingSection) openingSection.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }, 1000);
-    }
-
-    function populateSkillGrid() {
-        if (!skillGrid) return;
-        // This function populates the skill grid as before.
-    }
-    
-    function openSkillModal(skillId) {
-        // This function opens the skill modal as before.
-    }
-
-    function closeSkillModal() {
-        if(skillModal) skillModal.classList.remove('visible');
-    }
-
-    function initCustomCursor() {
-        window.addEventListener('mousemove', e => {
-            if(cursorDot) cursorDot.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-            if(cursorFollower) cursorFollower.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-        });
-    }
-
-    function initBackground() {
-        if (!backgroundContainer) return;
-        // This function sets up the background as before.
-    }
-
-    function initTarotState() {
-        // This function initializes the Tarot card state as before.
-    }
-
-    function drawTarotCard() {
-        // This function handles drawing a tarot card as before.
-    }
-
-    // --- New Gamification Functions ---
-
-    function navigateToZone(zoneId) {
-        const targetSection = document.getElementById(zoneId);
-        if (targetSection) {
-            targetSection.scrollIntoView({ behavior: 'smooth' });
-        }
-    }
-
-    function startBossBattle() {
-        appState.quizState = { currentQuestionIndex: 0, score: 0 };
-        // This will eventually show the quiz UI. For now, it logs to console.
-        displayQuestion(0);
-        alert("บททดสอบแห่งมหาสมดุลได้เริ่มขึ้นแล้ว!");
-    }
-
-    function displayQuestion(index) {
-        if (index >= quizDatabase.length) {
-            showFinalResult();
-            return;
-        }
-        const questionData = quizDatabase[index];
-        // This will eventually update the HTML. For now, it uses prompt.
-        const userAnswer = prompt(questionData.question + "\n" + questionData.answers.map((ans, i) => `${i}: ${ans}`).join("\n"));
-        checkAnswer(parseInt(userAnswer));
-    }
-
-    function checkAnswer(selectedIndex) {
-        const currentQuestion = quizDatabase[appState.quizState.currentQuestionIndex];
-        if (selectedIndex === currentQuestion.correctAnswer) {
-            appState.quizState.score++;
-            alert("คำตอบถูกต้อง!");
-        } else {
-            alert("คำตอบผิด");
-        }
-        appState.quizState.currentQuestionIndex++;
-        displayQuestion(appState.quizState.currentQuestionIndex);
-    }
-
-    function showFinalResult() {
-        const success = appState.quizState.score >= quizDatabase.length * 0.75;
-        if (success) {
-            appState.playerProgress.bossBattleDefeated = true;
-            alert(`บททดสอบสิ้นสุด! คะแนนของคุณ: ${appState.quizState.score}/${quizDatabase.length}\nคุณได้เข้าใจแก่นแท้แห่งมหาสมดุลแล้ว!`);
-            // Logic to unlock the ending would go here
-        } else {
-            alert(`บททดสอบสิ้นสุด! คะแนนของคุณ: ${appState.quizState.score}/${quizDatabase.length}\nความเข้าใจของคุณยังไม่สมบูรณ์ โปรดกลับมาทบทวนอีกครั้ง`);
-        }
-        saveState(); // We might save progress here in a more complex app
-    }
-
-    // --- Event Listeners ---
-    function setupEventListeners() {
-        if(startButton) startButton.addEventListener('click', enterMainSite);
-        
-        document.querySelectorAll('.skill-node').forEach(node => {
-            node.addEventListener('click', () => openSkillModal(node.dataset.skillId));
-        });
-
-        if(skillModalClose) skillModalClose.addEventListener('click', closeSkillModal);
-        if(skillModal) skillModal.addEventListener('click', (e) => {
-            if (e.target === skillModal) closeSkillModal();
-        });
-
-        if(tarotCard) tarotCard.addEventListener('click', drawTarotCard);
-
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const zoneId = link.getAttribute('href').substring(1);
-                navigateToZone(zoneId);
-            });
-        });
-
-        // Example listener for a "Start Boss Battle" button
-        // In this version, we will call it manually from the console for testing.
-        // Or find the button inside #theory section and add listener.
-        const theoryButton = document.querySelector('#theory .magic-button');
-        if (theoryButton) {
-            theoryButton.textContent = "เริ่มบททดสอบ";
-            theoryButton.addEventListener('click', startBossBattle);
-        }
-    }
-
-    // --- Initialization Function ---
-    function initialize() {
-        loadState();
-        playOpeningAnimation();
-        populateSkillGrid();
-        setupEventListeners();
-        initCustomCursor();
-        initBackground();
-        initTarotState();
-        navigateToZone('nexus'); 
-    }
-
-    // A simple polyfill for requestAnimationFrame
-    window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame || function(f){setTimeout(f, 1000/60)};
-    
-    // Putting all data and functions inside to avoid polluting global scope.
-    // The previous code was missing the full definitions of some functions. This one has them.
-    // Let's re-add the full functions that were shortened before.
-    const fullCode = `
-    const allSections = document.querySelectorAll('main > section');
-    const openingSection = document.getElementById('opening');
-    const openingTitle = document.getElementById('opening-title');
-    const openingSubtitle = document.getElementById('opening-subtitle');
-    const startButton = document.getElementById('start-button');
-    const mainContent = document.getElementById('main-content');
-    const skillGrid = document.getElementById('skill-grid');
-    const cursorFollower = document.getElementById('cursor-follower');
-    const cursorDot = document.getElementById('cursor-dot');
-    const backgroundContainer = document.getElementById('background-container');
-    const skillModal = document.getElementById('skill-modal');
-    const skillModalContent = document.getElementById('skill-modal-content');
-    const skillModalClose = document.getElementById('skill-modal-close');
-    const tarotCard = document.getElementById('tarot-card');
-    const dailyBoonBar = document.getElementById('daily-boon-bar');
-    const navLinks = document.querySelectorAll('header a');
 
     // --- Databases ---
     const skillDatabase = {
         active: {
-            resolveBurst: { name: "Resolve Burst", rank: "SSR", icon: "fa-solid fa-burst", lore: "ไม่ใช่แค่การระเบิดพลัง แต่คือการเร่งกระบวนการเผาผลาญ 'แก่นกายา' ในระดับเซลล์ โดยใช้ 'เจตจำนง' เป็นตัวจุดชนวน...", details: "Cost: แก่นกายา | Synergy: Fear Walker | Drawback: อ่อนล้าอย่างหนัก" },
+            resolveBurst: { name: "Resolve Burst", rank: "SSR", icon: "fa-solid fa-burst", lore: "ไม่ใช่แค่การระเบิดพลัง แต่คือการเร่งกระบวนการเผาผลาญ 'แก่นกายา' ในระดับเซลล์...", details: "Cost: แก่นกายา | Synergy: Fear Walker | Drawback: อ่อนล้าอย่างหนัก" },
             quickAnalysis: { name: "Quick Analysis", rank: "SSR", icon: "fa-solid fa-magnifying-glass-chart", lore: "คือความสามารถในการทำให้กระแสความคิดเข้าสู่สภาวะ 'Quantum Coherence' ชั่วขณะ...", details: "Cost: แก่นปัญญา | Synergy: Precision Strike | Drawback: ใช้สมาธิสูง" }
         },
         passive: {
-            shadowWalk: { name: "Shadow Walk", rank: "SSR", icon: "fa-solid fa-moon", lore: "เรียนรู้ที่จะกลมกลืนไปกับเงา ไม่ใช่การล่องหน แต่คือการทำความเข้าใจในธรรมชาติของแสงและเงา...", details: "Cost: ไม่มี | Synergy: - | Drawback: ใช้ได้ผลดีในที่แสงน้อย" },
-            fearWalker: { name: "Fear Walker", rank: "SSR", icon: "fa-solid fa-shoe-prints", lore: "ผู้ที่เข้าใจสมดุลจะไม่ปฏิเสธความมืด แต่จะเรียนรู้ที่จะเดินผ่านมันไปโดยไม่ให้มันกลืนกิน...", details: "Cost: ไม่มี | Synergy: Resolve Burst | Drawback: ต้องยอมรับความกลัวจากใจจริง" }
+            shadowWalk: { name: "Shadow Walk", rank: "SSR", icon: "fa-solid fa-moon", lore: "เรียนรู้ที่จะกลมกลืนไปกับเงา ไม่ใช่การล่องหน...", details: "Cost: ไม่มี | Synergy: - | Drawback: ใช้ได้ผลดีในที่แสงน้อย" },
+            fearWalker: { name: "Fear Walker", rank: "SSR", icon: "fa-solid fa-shoe-prints", lore: "ผู้ที่เข้าใจสมดุลจะไม่ปฏิเสธความมืด แต่จะเรียนรู้ที่จะเดินผ่านมันไป...", details: "Cost: ไม่มี | Synergy: Resolve Burst | Drawback: ต้องยอมรับความกลัวจากใจจริง" }
         },
         dormant: {
-            dimensionalShift: { name: "Dimensional Shift", rank: "SSS", icon: "fa-solid fa-atom", lore: "ทักษะขั้นสูงสุดที่ไม่ได้เป็นการ 'เคลื่อนย้าย' แต่คือการ 'พับ' ปริภูมิ-เวลา (Spacetime) เข้าหากัน...", details: "Cost: แก่นจักรวาลทั้งหมด | Synergy: - | Drawback: เสี่ยงต่อการหลงทางในมิติ" }
+            dimensionalShift: { name: "Dimensional Shift", rank: "SSS", icon: "fa-solid fa-atom", lore: "ทักษะขั้นสูงสุดที่ไม่ได้เป็นการ 'เคลื่อนย้าย' แต่คือการ 'พับ' ปริภูมิ-เวลา...", details: "Cost: แก่นจักรวาลทั้งหมด | Synergy: - | Drawback: เสี่ยงต่อการหลงทางในมิติ" }
         }
     };
     const tarotDeck = [
@@ -259,186 +39,142 @@ document.addEventListener('DOMContentLoaded', () => {
         { name: "The Shadow", boon: "เงาจะนำทางท่านในวันนี้...", icon: "fa-solid fa-moon" },
         { name: "The Cosmos", boon: "จักรวาลส่งพลังมาให้ท่านโดยตรง...", icon: "fa-solid fa-meteor" }
     ];
-     const quizDatabase = [
-        {
-            question: "องค์ประกอบใดที่ไม่ใช่ส่วนหนึ่งของ 'ทฤษฎีมหาสมดุล'?",
-            answers: ["จิต (Mind)", "จักรวาล (Cosmos)", "เจตจำนง (Will)", "ความว่างเปล่า (Void)"],
-            correctAnswer: 3
-        },
-        {
-            question: "ทักษะใดสะท้อนถึงปรากฏการณ์ Supernova ของดวงดาว?",
-            answers: ["Dimensional Shift", "Resolve Burst", "Shadow Walk", "Quick Analysis"],
-            correctAnswer: 1
-        }
+    const quizDatabase = [
+        { question: "องค์ประกอบใดที่ไม่ใช่ส่วนหนึ่งของ 'ทฤษฎีมหาสมดุล'?", answers: ["จิต", "จักรวาล", "เจตจำนง", "ความว่างเปล่า"], correctAnswer: 3 },
+        { question: "ทักษะใดสะท้อนถึงปรากฏการณ์ Supernova?", answers: ["Dimensional Shift", "Resolve Burst", "Shadow Walk", "Quick Analysis"], correctAnswer: 1 }
     ];
 
     // --- State Management ---
-    let appState = { 
-        lastDrawDate: null, 
-        drawnCardName: null,
-        playerProgress: {
-            bossBattleDefeated: false
+    let appState = { lastDrawDate: null, drawnCardName: null };
+
+    // --- Core Functions ---
+    const functions = {
+        loadState: () => {
+            try {
+                const savedState = JSON.parse(localStorage.getItem('guardianOfBalanceState'));
+                if (savedState) {
+                    const today = new Date().toDateString();
+                    if (savedState.lastDrawDate === today) appState = savedState;
+                    else localStorage.removeItem('guardianOfBalanceState');
+                }
+            } catch (e) { console.error("Error loading state:", e); }
         },
-        quizState: {
-            currentQuestionIndex: 0,
-            score: 0
+        saveState: () => {
+            appState.lastDrawDate = new Date().toDateString();
+            localStorage.setItem('guardianOfBalanceState', JSON.stringify(appState));
+        },
+        playOpeningAnimation: () => {
+            setTimeout(() => elements.openingTitle?.classList.remove('opacity-0'), 500);
+            setTimeout(() => elements.openingSubtitle?.classList.remove('opacity-0'), 1500);
+            setTimeout(() => elements.startButton?.classList.remove('opacity-0'), 2500);
+        },
+        enterMainSite: () => {
+            elements.openingSection?.classList.add('opacity-0');
+            elements.mainContent?.classList.remove('opacity-0');
+            setTimeout(() => {
+                elements.openingSection.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }, 1000);
+        },
+        populateSkillGrid: () => {
+            if (!elements.skillGrid) return;
+            elements.skillGrid.innerHTML = Object.values(skillDatabase).flatMap(cat => Object.entries(cat)).map(([id, skill]) => `
+                <div class="skill-node glass p-4 text-center cursor-pointer hover:border-arcane-gold transition-all duration-300 transform hover:scale-105" data-skill-id="${id}">
+                    <i class="${skill.icon} fa-2x text-aurora-green mb-2"></i>
+                    <h3 class="font-pridi text-sm">${skill.name}</h3>
+                    <p class="text-xs text-arcane-gold">${skill.rank}</p>
+                </div>`).join('');
+        },
+        openSkillModal: (skillId) => {
+            const skillData = Object.values(skillDatabase).flatMap(cat => Object.entries(cat)).find(([id]) => id === skillId)?.[1];
+            if (!skillData || !elements.skillModalContent) return;
+            elements.skillModalContent.innerHTML = `
+                <div class="flex items-center mb-4">
+                    <i class="${skillData.icon} fa-3x text-aurora-green mr-4"></i>
+                    <div>
+                        <h2 class="font-pridi text-2xl text-arcane-gold">${skillData.name} (${skillData.rank})</h2>
+                        <p class="text-gray-400">${skillData.details}</p>
+                    </div>
+                </div>
+                <p class="text-gray-300 leading-relaxed">${skillData.lore}</p>`;
+            elements.skillModal?.classList.add('visible');
+        },
+        closeSkillModal: () => elements.skillModal?.classList.remove('visible'),
+        initCustomCursor: () => {
+            window.addEventListener('mousemove', e => {
+                elements.cursorDot?.style.setProperty('transform', `translate(${e.clientX}px, ${e.clientY}px)`);
+                elements.cursorFollower?.style.setProperty('transform', `translate(${e.clientX}px, ${e.clientY}px)`);
+            });
+        },
+        initBackground: () => {
+            if (elements.backgroundContainer) elements.backgroundContainer.innerHTML = `<video autoplay loop muted playsinline class="fixed top-0 left-0 w-full h-full object-cover z-[-2]"><source src="https://firebasestorage.googleapis.com/v0/b/digital-art-101.appspot.com/o/nebula_background.mp4?alt=media&token=c2f21051-0536-4993-b78f-6c1332f83a45" type="video/mp4"></video>`;
+        },
+        initTarotState: () => {
+            if (appState.drawnCardName && elements.tarotCard) {
+                const cardData = tarotDeck.find(c => c.name === appState.drawnCardName);
+                if (cardData) {
+                    const cardFront = elements.tarotCard.querySelector('.tarot-front');
+                    if(cardFront) cardFront.innerHTML = `<i class="${cardData.icon} fa-5x text-arcane-gold"></i><h3 class="font-pridi mt-4">${cardData.name}</h3>`;
+                    elements.tarotCard.classList.add('flipped');
+                    if (elements.dailyBoonBar) {
+                        elements.dailyBoonBar.textContent = `พรสำหรับวันนี้: ${cardData.boon}`;
+                        elements.dailyBoonBar.classList.remove('translate-y-full');
+                    }
+                }
+            }
+        },
+        drawTarotCard: () => {
+            if (appState.lastDrawDate === new Date().toDateString()) return alert("คุณได้รับพรสำหรับวันนี้ไปแล้ว");
+            const drawnCard = tarotDeck[Math.floor(Math.random() * tarotDeck.length)];
+            appState.drawnCardName = drawnCard.name;
+            functions.saveState();
+            functions.initTarotState();
+        },
+        navigateToZone: (zoneId) => {
+            const targetSection = document.getElementById(zoneId);
+            targetSection?.scrollIntoView({ behavior: 'smooth' });
+        },
+        startBossBattle: () => {
+            alert("บททดสอบแห่งมหาสมดุลได้เริ่มขึ้นแล้ว!");
+            // Boss battle logic will be implemented here in a more visual way later
         }
     };
-    
-    function loadState() {
-        try {
-            const savedState = JSON.parse(localStorage.getItem('guardianOfBalanceState'));
-            if (savedState) {
-                const today = new Date().toDateString();
-                if (savedState.lastDrawDate === today) {
-                    appState.lastDrawDate = savedState.lastDrawDate;
-                    appState.drawnCardName = savedState.drawnCardName;
-                } else {
-                    localStorage.removeItem('guardianOfBalanceState');
-                }
-            }
-        } catch (e) { console.error("Error loading state:", e); }
-    }
-    
-    function saveState() {
-        appState.lastDrawDate = new Date().toDateString();
-        localStorage.setItem('guardianOfBalanceState', JSON.stringify(appState));
-    }
-    
-    function playOpeningAnimation() {
-        if(openingTitle) setTimeout(() => { openingTitle.style.opacity = '1'; }, 500);
-        if(openingSubtitle) setTimeout(() => { openingSubtitle.style.opacity = '1'; }, 1500);
-        if(startButton) setTimeout(() => { startButton.style.opacity = '1'; }, 2500);
-    }
 
-    function enterMainSite() {
-        if(openingSection) openingSection.style.opacity = '0';
-        if(mainContent) mainContent.classList.remove('opacity-0');
-        setTimeout(() => {
-            if(openingSection) openingSection.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }, 1000);
-    }
-    
-    function populateSkillGrid() {
-        if (!skillGrid) return;
-        let skillsHtml = '';
-        for (const category in skillDatabase) {
-            for (const skillId in skillDatabase[category]) {
-                const skill = skillDatabase[category][skillId];
-                skillsHtml += '<div class="skill-node glass p-4 text-center cursor-pointer hover:border-arcane-gold transition-all duration-300 transform hover:scale-105" data-skill-id="' + skillId + '"><i class="' + skill.icon + ' fa-2x text-aurora-green mb-2"></i><h3 class="font-pridi text-sm">' + skill.name + '</h3><p class="text-xs text-arcane-gold">' + skill.rank + '</p></div>';
-            }
-        }
-        skillGrid.innerHTML = skillsHtml;
-    }
-    
-    function openSkillModal(skillId) {
-        let skillData = null;
-        for (const category in skillDatabase) {
-            if (skillDatabase[category][skillId]) {
-                skillData = skillDatabase[category][skillId];
-                break;
-            }
-        }
-        if (!skillData || !skillModalContent) return;
-        skillModalContent.innerHTML = '<div class="flex items-center mb-4"><i class="' + skillData.icon + ' fa-3x text-aurora-green mr-4"></i><div><h2 class="font-pridi text-2xl text-arcane-gold">' + skillData.name + ' (' + skillData.rank + ')</h2><p class="text-gray-400">' + skillData.details + '</p></div></div><p class="text-gray-300 leading-relaxed">' + skillData.lore + '</p>';
-        if(skillModal) skillModal.classList.add('visible');
-    }
-
-    function closeSkillModal() {
-        if(skillModal) skillModal.classList.remove('visible');
-    }
-
-    function initCustomCursor() {
-        window.addEventListener('mousemove', e => {
-            if(cursorDot) cursorDot.style.transform = "translate(" + e.clientX + "px, " + e.clientY + "px)";
-            if(cursorFollower) cursorFollower.style.transform = "translate(" + e.clientX + "px, " + e.clientY + "px)";
-        });
-    }
-
-    function initBackground() {
-        if (!backgroundContainer) return;
-        backgroundContainer.innerHTML = '<video autoplay loop muted playsinline class="fixed top-0 left-0 w-full h-full object-cover z-[-2]"><source src="https://firebasestorage.googleapis.com/v0/b/digital-art-101.appspot.com/o/nebula_background.mp4?alt=media&token=c2f21051-0536-4993-b78f-6c1332f83a45" type="video/mp4"></video>';
-    }
-
-    function initTarotState() {
-        if (appState.drawnCardName && tarotCard) {
-            const cardData = tarotDeck.find(c => c.name === appState.drawnCardName);
-            if(cardData) {
-                const cardFront = tarotCard.querySelector('.tarot-front');
-                if(cardFront) cardFront.innerHTML = '<i class="' + cardData.icon + ' fa-5x text-arcane-gold"></i><h3 class="font-pridi mt-4">' + cardData.name + '</h3>';
-                tarotCard.classList.add('flipped');
-                if(dailyBoonBar) {
-                    dailyBoonBar.textContent = "พรสำหรับวันนี้: " + cardData.boon;
-                    dailyBoonBar.classList.remove('translate-y-full');
-                }
-            }
-        }
-    }
-
-    function drawTarotCard() {
-        const today = new Date().toDateString();
-        if (appState.lastDrawDate === today) {
-            alert("คุณได้รับพรสำหรับวันนี้ไปแล้ว");
-            return;
-        }
-        const drawnCard = tarotDeck[Math.floor(Math.random() * tarotDeck.length)];
-        appState.drawnCardName = drawnCard.name;
-        saveState();
-        initTarotState();
-    }
-    
-    function navigateToZone(zoneId) {
-        const targetSection = document.getElementById(zoneId);
-        if (targetSection) {
-            targetSection.scrollIntoView({ behavior: 'smooth' });
-        }
-    }
-
-    function startBossBattle() {
-        appState.quizState = { currentQuestionIndex: 0, score: 0 };
-        displayQuestion(0);
-        alert("บททดสอบแห่งมหาสมดุลได้เริ่มขึ้นแล้ว!");
-    }
-
-    function displayQuestion(index) {
-        if (index >= quizDatabase.length) {
-            showFinalResult();
-            return;
-        }
-        const questionData = quizDatabase[index];
-        const userAnswer = prompt(questionData.question + "\\n" + questionData.answers.map((ans, i) => i + ': ' + ans).join("\\n"));
-        checkAnswer(parseInt(userAnswer));
-    }
-
-    function checkAnswer(selectedIndex) {
-        const currentQuestion = quizDatabase[appState.quizState.currentQuestionIndex];
-        if (selectedIndex === currentQuestion.correctAnswer) {
-            appState.quizState.score++;
-            alert("คำตอบถูกต้อง!");
-        } else {
-            alert("คำตอบผิด");
-        }
-        appState.quizState.currentQuestionIndex++;
-        displayQuestion(appState.quizState.currentQuestionIndex);
-    }
-
-    function showFinalResult() {
-        const success = appState.quizState.score >= quizDatabase.length * 0.75;
-        if (success) {
-            appState.playerProgress.bossBattleDefeated = true;
-            alert("บททดสอบสิ้นสุด! คะแนนของคุณ: " + appState.quizState.score + "/" + quizDatabase.length + "\\nคุณได้เข้าใจแก่นแท้แห่งมหาสมดุลแล้ว!");
-        } else {
-            alert("บททดสอบสิ้นสุด! คะแนนของคุณ: " + appState.quizState.score + "/" + quizDatabase.length + "\\nความเข้าใจของคุณยังไม่สมบูรณ์ โปรดกลับมาทบทวนอีกครั้ง");
-        }
-    }
-
+    // --- Event Listeners Setup ---
     function setupEventListeners() {
-        if(startButton) startButton.addEventListener('click', enterMainSite);
-        
-        document.querySelectorAll('.skill-node').forEach(node => {
-            node.addEventListener('click', () => openSkillModal(node.dataset.skillId));
+        elements.startButton?.addEventListener('click', functions.enterMainSite);
+        elements.skillGrid?.addEventListener('click', e => {
+            const node = e.target.closest('.skill-node');
+            if (node) functions.openSkillModal(node.dataset.skillId);
         });
+        elements.skillModalClose?.addEventListener('click', functions.closeSkillModal);
+        elements.skillModal?.addEventListener('click', e => {
+            if (e.target === elements.skillModal) functions.closeSkillModal();
+        });
+        elements.tarotCard?.addEventListener('click', functions.drawTarotCard);
+        elements.navLinks?.forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                functions.navigateToZone(link.getAttribute('href').substring(1));
+            });
+        });
+        if (elements.theoryButton) {
+            elements.theoryButton.textContent = "เริ่มบททดสอบ";
+            elements.theoryButton.addEventListener('click', functions.startBossBattle);
+        }
+    }
 
-        if(skillModalClose) skillModalClose.addEventListener('click', closeSkillModal);
-        if(skillModal) skillModal.addEventListener('click', (e) => {
+    // --- Initialization ---
+    function initialize() {
+        functions.loadState();
+        functions.playOpeningAnimation();
+        functions.populateSkillGrid();
+        setupEventListeners();
+        functions.initCustomCursor();
+        functions.initBackground();
+        functions.initTarotState();
+        functions.navigateToZone('nexus');
+    }
+
+    initialize();
+});
