@@ -1,105 +1,144 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>กษิดิส บุญใบ - ผู้พิทักษ์แห่งสมดุล</title>
+    <meta name="description" content="สำรวจจักรวาลแห่ง 'ทฤษฎีมหาสมดุล' ผ่านประสบการณ์เชิงโต้ตอบของ กษิดิส บุญใบ, ผู้พิทักษ์แห่งสมดุล ที่ซึ่งจิต, จักรวาล, และเจตจำนงมาบรรจบกัน" />
+    <meta property="og:title" content="กษิดิส บุญใบ - ผู้พิทักษ์แห่งสมดุล" />
+    <meta property="og:description" content="ประสบการณ์เชิงโต้ตอบที่นำเสนอปรัชญาผ่านรูปแบบของเกมและศิลปะดิจิทัล" />
+    <meta property="og:image" content="https://i.imgur.com/your-og-image.png" />
+    <meta property="og:url" content="https://classy-kleicha-482283.netlify.app/" />
+    <meta property="og:type" content="website" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" href="assets/icons/favicon.ico" />
     
-    <meta name="description" content="สำรวจจักรวาลแห่ง 'ทฤษฎีมหาสมดุล' ผ่านประสบการณ์เชิงโต้ตอบของ กษิดิส บุญใบ, ผู้พิทักษ์แห่งสมดุล ที่ซึ่งจิต, จักรวาล, และเจตจำนงมาบรรจบกัน">
-    <meta property="og:title" content="กษิดิส บุญใบ - ผู้พิทักษ์แห่งสมดุล">
-    <meta property="og:description" content="ประสบการณ์เชิงโต้ตอบที่นำเสนอปรัชญาผ่านรูปแบบของเกมและศิลปะดิจิทัล">
-    <meta property="og:image" content="https://i.imgur.com/your-og-image.png"> <meta property="og:url" content="https://classy-kleicha-482283.netlify.app/">
-    <meta property="og:type" content="website">
-
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Pridi:wght@400;600;700&family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pridi:wght@400;600;700&family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <!-- AOS Animation -->
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+    
+    <link rel="stylesheet" href="style.css" />
 </head>
-
 <body class="bg-cosmic-black text-gray-300 font-sarabun antialiased">
 
-    <div id="background-container" class="fixed top-0 left-0 w-full h-full z-[-2]">
+  <!-- Background Video -->
+  <div id="background-container" class="fixed top-0 left-0 w-full h-full z-[-2]"></div>
+  <canvas id="aurora-canvas" class="fixed top-0 left-0 w-full h-full z-[-1]"></canvas>
+
+  <!-- Custom Cursor Elements -->
+  <div id="cursor-follower"></div>
+  <div id="cursor-dot"></div>
+
+  <!-- Opening Section -->
+  <section id="opening" class="fixed top-0 left-0 w-full h-full bg-cosmic-black flex flex-col items-center justify-center z-50 transition-opacity duration-1000">
+    <h1 id="opening-title" class="font-pridi text-4xl md:text-6xl text-arcane-gold hero-glow opacity-0 text-center px-4">กษิดิส บุญใบ</h1>
+    <p id="opening-subtitle" class="text-lg md:text-2xl text-gray-400 mt-4 opacity-0 text-center">ผู้พิทักษ์แห่งสมดุล</p>
+    <button id="start-button" class="magic-button opacity-0 mt-12">
+      <span class="magic-button-text">เริ่มต้นการเดินทาง</span>
+    </button>
+  </section>
+
+  <!-- Main Content -->
+  <div id="main-content" class="opacity-0 transition-opacity duration-1000">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 w-full z-30 p-4">
+      <nav class="container mx-auto glass flex justify-between items-center p-4">
+        <div class="font-pridi text-xl font-bold text-arcane-gold cursor-default select-none">K.B.</div>
+        <div class="hidden md:flex space-x-6">
+          <a href="#nexus" class="magic-link">Nexus</a>
+          <a href="#skills" class="magic-link">Skills</a>
+          <a href="#theory" class="magic-link">Theory</a>
+          <a href="#tarot" class="magic-link">Divination</a>
+          <a href="#chatbot" class="magic-link">Chatbot</a>
         </div>
-    <canvas id="aurora-canvas" class="fixed top-0 left-0 w-full h-full z-[-1]"></canvas>
+      </nav>
+    </header>
 
-    <div id="cursor-follower"></div>
-    <div id="cursor-dot"></div>
+    <!-- Main Sections -->
+    <main class="w-full h-screen overflow-y-auto snap-y snap-mandatory scrollbar-thin scrollbar-thumb-arcane-gold scrollbar-track-transparent">
+      
+      <!-- Nexus -->
+      <section id="nexus" class="w-full h-screen snap-start flex flex-col items-center justify-center text-center p-4" data-aos="fade-up">
+        <h2 class="font-pridi text-3xl md:text-5xl text-nebula-purple hero-glow mb-2">The Nexus</h2>
+        <p class="text-gray-400 mb-8 max-w-xl">ศูนย์กลางแห่งการเดินทาง สู่จักรวาลแห่งมหาสมดุล ที่ซึ่งพลังของจิตใจและจักรวาลบรรจบกันอย่างไม่สิ้นสุด</p>
+        <img src="assets/images/nexus.png" alt="Nexus Image" class="mx-auto w-2/3 max-w-md rounded-lg shadow-lg" />
+      </section>
 
-    <section id="opening" class="fixed top-0 left-0 w-full h-full bg-cosmic-black flex flex-col items-center justify-center z-50 transition-opacity duration-1000">
-        <h1 id="opening-title" class="font-pridi text-4xl md:text-6xl text-arcane-gold hero-glow opacity-0 text-center px-4">กษิดิส บุญใบ</h1>
-        <p id="opening-subtitle" class="text-lg md:text-2xl text-gray-400 mt-4 opacity-0 text-center">ผู้พิทักษ์แห่งสมดุล</p>
-        <button id="start-button" class="magic-button opacity-0 mt-12">
-            <span class="magic-button-text">เริ่มต้นการเดินทาง</span>
-        </button>
-    </section>
-    
-    <div id="main-content" class="opacity-0 transition-opacity duration-1000">
-        <header class="fixed top-0 left-0 w-full z-30 p-4">
-            <nav class="container mx-auto glass flex justify-between items-center p-4">
-                <div class="font-pridi text-xl font-bold text-arcane-gold">K.B.</div>
-                <div class="hidden md:flex space-x-6">
-                    <a href="#nexus" class="magic-link">Nexus</a>
-                    <a href="#skills" class="magic-link">Skills</a>
-                    <a href="#theory" class="magic-link">Theory</a>
-                    <a href="#tarot" class="magic-link">Divination</a>
-                </div>
-            </nav>
-        </header>
-
-        <main class="w-full h-screen overflow-y-auto snap-y snap-mandatory">
-            <section id="nexus" class="w-full h-screen snap-start flex flex-col items-center justify-center text-center p-4 relative">
-                <h2 class="font-pridi text-3xl md:text-5xl text-nebula-purple hero-glow mb-2">The Nexus</h2>
-                <p class="text-gray-400 mb-8">ศูนย์กลางแห่งการเดินทาง</p>
-                </section>
-
-            <section id="skills" class="w-full h-screen snap-start flex items-center justify-center p-4">
-                <div class="container mx-auto glass p-8">
-                    <h2 class="font-pridi text-3xl md:text-5xl text-aurora-green hero-glow mb-8 text-center">ศาสตร์แห่งสมดุล</h2>
-                    <div id="skill-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        </div>
-                </div>
-            </section>
-            
-            <section id="theory" class="w-full h-screen snap-start flex items-center justify-center p-4">
-                 <div class="container mx-auto glass p-8 text-center">
-                    <h2 class="font-pridi text-3xl md:text-5xl text-blue-400 hero-glow mb-8">เส้นทางแห่งทฤษฎี</h2>
-                    <p class="text-gray-400 mb-6">การเดินทางเพื่อเข้าใจแก่นแท้แห่งมหาสมดุลเริ่มต้นที่นี่</p>
-                     <button class="magic-button">เข้าสู่ Big Bang Zone</button>
-                </div>
-            </section>
-
-            <section id="tarot" class="w-full h-screen snap-start flex items-center justify-center p-4">
-                <div class="container mx-auto glass p-8 text-center">
-                    <h2 class="font-pridi text-3xl md:text-5xl text-arcane-gold hero-glow mb-8">ประตูสู่ญาณทัศนะ</h2>
-                    <div id="tarot-card-container">
-                        <div id="tarot-card">
-                            <div class="tarot-face tarot-back">
-                                <i class="fas fa-star-of-david fa-4x"></i>
-                            </div>
-                            <div class="tarot-face tarot-front glass">
-                                </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-        
-        <div id="daily-boon-bar" class="fixed bottom-0 left-0 w-full p-3 text-center glass z-40 translate-y-full transition-transform duration-500">
+      <!-- Skills -->
+      <section id="skills" class="w-full h-screen snap-start flex items-center justify-center p-4" data-aos="fade-up">
+        <div class="container mx-auto glass p-8 rounded-xl shadow-xl max-w-6xl">
+          <h2 class="font-pridi text-3xl md:text-5xl text-aurora-green hero-glow mb-8 text-center">ศาสตร์แห่งสมดุล</h2>
+          <div id="skill-grid" class="grid grid-cols-2 md:grid-cols-4 gap-6"></div>
         </div>
+      </section>
 
-        <div id="skill-modal" class="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
-            <div class="glass p-8 max-w-2xl w-full relative transform scale-95 transition-transform duration-300">
-                <button id="skill-modal-close" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-arcane-gold">&times;</button>
-                <div id="skill-modal-content">
-                    </div>
+      <!-- Theory -->
+      <section id="theory" class="w-full h-screen snap-start flex items-center justify-center p-4" data-aos="fade-up">
+        <div class="container mx-auto glass p-8 rounded-xl shadow-xl max-w-4xl text-center">
+          <h2 class="font-pridi text-3xl md:text-5xl text-blue-400 hero-glow mb-8">เส้นทางแห่งทฤษฎี</h2>
+          <p class="text-gray-400 mb-6 max-w-3xl mx-auto">การเดินทางเพื่อเข้าใจแก่นแท้แห่งมหาสมดุลเริ่มต้นที่นี่ สำรวจทฤษฎีและแนวคิดที่เป็นพื้นฐานแห่งความสมดุล</p>
+          <button class="magic-button" id="start-boss-battle">เริ่มบททดสอบ</button>
+        </div>
+      </section>
+
+      <!-- Tarot -->
+      <section id="tarot" class="w-full h-screen snap-start flex items-center justify-center p-4" data-aos="fade-up">
+        <div class="container mx-auto glass p-8 rounded-xl shadow-xl max-w-md text-center">
+          <h2 class="font-pridi text-3xl md:text-5xl text-arcane-gold hero-glow mb-8">ประตูสู่ญาณทัศนะ</h2>
+          <div id="tarot-card-container" class="mx-auto" style="perspective: 1000px;">
+            <div id="tarot-card" class="cursor-pointer w-44 h-72 relative transform-style-preserve-3d transition-transform duration-800">
+              <div class="tarot-face tarot-back absolute w-full h-full flex flex-col items-center justify-center rounded-xl border-2 border-arcane-gold bg-gradient-to-br from-cosmic-black to-shadow">
+                <i class="fas fa-star-of-david fa-4x"></i>
+              </div>
+              <div class="tarot-face tarot-front glass absolute w-full h-full rounded-xl rotate-y-180 flex flex-col items-center justify-center"></div>
             </div>
+          </div>
         </div>
+      </section>
 
+      <!-- Chatbot -->
+      <section id="chatbot" class="w-full h-screen snap-start flex flex-col p-6 glass rounded-xl max-w-3xl mx-auto mt-12" data-aos="fade-up">
+        <h2 class="font-pridi text-3xl md:text-5xl text-purple-400 hero-glow mb-6 text-center">ถามผู้พิทักษ์แห่งสมดุล</h2>
+        <div id="chat-window" class="flex-grow bg-shadow rounded p-4 mb-4 overflow-y-auto" style="min-height: 300px;"></div>
+        <div class="flex space-x-4">
+          <input id="chat-input" type="text" placeholder="ถามอะไรก็ได้..." class="flex-grow rounded p-3 text-black" />
+          <button id="chat-send" class="magic-button">ส่ง</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Daily Boon Bar -->
+    <div id="daily-boon-bar" class="fixed bottom-0 left-0 w-full p-3 text-center glass z-40 translate-y-full transition-transform duration-500"></div>
+
+    <!-- Skill Modal -->
+    <div id="skill-modal" class="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+      <div class="glass p-8 max-w-2xl w-full relative transform scale-95 transition-transform duration-300 rounded-xl shadow-lg">
+        <button id="skill-modal-close" class="absolute top-4 right-4 text-3xl text-gray-400 hover:text-arcane-gold" aria-label="ปิด">&times;</button>
+        <div id="skill-modal-content"></div>
+      </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Cookie Consent Banner -->
+    <div id="cookie-banner" class="fixed bottom-0 left-0 w-full p-4 bg-cosmic-black text-gray-300 text-center glass backdrop-blur-md z-50 hidden">
+      เว็บไซต์นี้ใช้คุกกี้เพื่อปรับปรุงประสบการณ์การใช้งาน
+      <button onclick="acceptCookies()" class="ml-4 magic-button">ยอมรับ</button>
+    </div>
+
+  </div>
+
+  <!-- Background Music -->
+  <audio id="bg-music" src="assets/sounds/bg-music.mp3" loop autoplay muted></audio>
+
+  <!-- JS & Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script src="script.js"></script>
+  <script>
+    AOS.init();
+  </script>
 </body>
 </html>
